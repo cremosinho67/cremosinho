@@ -1,0 +1,119 @@
+#include <QTRSensors.h>
+
+#define NUM_SENSORS            4
+#define NUM_SAMPLES_PER_SENSOR  4
+#define EMITTER_PIN             2
+
+QTRSensors qtra;
+uint16_t sensorValues[NUM_SENSORS];
+
+#define STBY 9
+
+// Motor A - Direito
+const int PWMA = 13;
+const int AIN1 = 11;
+const int AIN2 = 12;
+
+// Motor B - Esquerdo
+const int PWMB = 5;
+const int BIN1 = 8;
+const int BIN2 = 7;
+
+const int VELOCIDADE = 150; // 0 a 255
+
+int mediasensoresesquerda = 0;
+int mediasensoresdireita = 0;
+
+void setup()
+{
+  Serial.begin(9600);
+
+  qtra.setTypeAnalog();
+  qtra.setSensorPins((const uint8_t[]){ A1, A2, A3, A4}, NUM_SENSORS);
+  qtra.setSamplesPerSensor(NUM_SAMPLES_PER_SENSOR);
+  qtra.setEmitterPin(EMITTER_PIN);
+
+  Serial.println(F("=== TESTE DE SENSORES (sem calibracao) ==="));
+  Serial.println(F("Valores brutos do ADC: 0 = luz maxima refletida (branco)"));
+  Serial.println(F("                        1023 = nenhuma luz refletida (preto/vazio)"));
+  Serial.println(F("Passe cada sensor sobre o branco e depois sobre o preto"));
+  Serial.println(F("e observe os numeros mudarem na coluna correspondente."));
+  Serial.println();
+
+  pinMode(STBY, OUTPUT);
+  pinMode(PWMA, OUTPUT);
+  pinMode(AIN1, OUTPUT);
+  pinMode(AIN2, OUTPUT);
+  pinMode(PWMB, OUTPUT);
+  pinMode(BIN1, OUTPUT);
+  pinMode(BIN2, OUTPUT);
+
+  digitalWrite(STBY, HIGH); // tira a ponte H do standby
+
+  delay(1000);
+}
+
+void loop()
+{
+  // read() devolve os valores BRUTOS do ADC (0-1023), sem calibração.
+  // Isso é o teste mais direto: confirma se o sensor físico está
+  // realmente enxergando a diferença entre branco e preto.
+  qtra.read(sensorValues);
+
+  Serial.print(F("S0:"));
+  Serial.print(sensorValues[0]); // Terceiro sensor (da esqu. para dire. olhando o lado inferior)
+  
+  Serial.print(F("  S1:"));
+  Serial.print(sensorValues[1]); // Sexto sensor
+  
+  Serial.print(F("  S2:"));
+  Serial.print(sensorValues[2]); // Quinto sensor
+  
+  Serial.print(F("  S3:"));
+  Serial.print(sensorValues[3]); // Quarto sensor
+  
+  Serial.print(F("  S4:"));
+  Serial.print(sensorValues[4]);
+  Serial.print(F("  S5:"));
+  Serial.println(sensorValues[5]);
+
+  mediasensoresesquerda = (sensorValues[0] + sensorValues[3])/2;
+  mediasensoresdireita = (sensorValues[1] + sensorValues[2])/2;
+
+  if (mediasensoresesquerda > 200 && mediasensoresdireita > 200) {
+    moverFrente();
+  }else {
+    moverTras();
+  }
+
+  delay(200);
+}
+
+void moverFrente() {
+  // Motor Direito (A) para frente
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+  analogWrite(PWMA, VELOCIDADE);
+
+  // Motor Esquerdo (B) para frente
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+  analogWrite(PWMB, VELOCIDADE);
+}
+
+void moverTras() {
+  // Motor Direito (A) para trás
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, HIGH);
+  analogWrite(PWMA, VELOCIDADE);
+
+  // Motor Esquerdo (B) para trás
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+  analogWrite(PWMB, VELOCIDADE);
+}
+
+void pararMotores() {
+  analogWrite(PWMA, 0);
+  analogWrite(PWMB, 0);
+}
