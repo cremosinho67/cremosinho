@@ -102,7 +102,7 @@ void loop()
   // Para 6 sensores, vai de 0 a 5000
 
   int centro = 2500;
-  int intervalo = 600;
+  int intervalo = 300;
   int error = position - centro;
   int sensoresCentro = (sensorValues[1]+sensorValues[2]+sensorValues[3]+sensorValues[4])/4;
   int sensoresExtremos = (sensorValues[0]+sensorValues[5])/2;
