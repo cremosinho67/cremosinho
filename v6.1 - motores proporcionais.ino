@@ -52,7 +52,7 @@ void setup()
 
   Serial.println("Calibrando sensores... Mexe o cremoso ai!");
 
-  for (uint16_t i = 0; i < 400; i++) {
+  for (uint16_t i = 0; i < 200; i++) {
     qtra.calibrate();
     delay(20);
   }
@@ -90,7 +90,7 @@ void loop()
        sensorValues[3] +
        sensorValues[4]) / 4;
 
-  int sensoPresExtremos =
+  int sensoresExtremos =
       (sensorValues[0] +
        sensorValues[5]) / 2;
 
