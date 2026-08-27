@@ -1,7 +1,7 @@
 #include <QTRSensors.h>
 
 #define NUM_SENSORS 6
-#define NUM_SAMPLES_PER_SENSOR 4
+#define NUM_SAMPLES_PER_SENSOR 2
 #define EMITTER_PIN 2
 
 QTRSensors qtra;
@@ -19,16 +19,16 @@ const int PWMB = 5;
 const int BIN1 = 8;
 const int BIN2 = 7;
 
-const int VELOCIDADE = 150;   // Velocidade maxima (0-255): usada em linha reta e pelo motor "de fora" na curva
+const int VELOCIDADE = 200;   // Velocidade maxima (0-255): usada em linha reta e pelo motor "de fora" na curva
 const int CENTRO = 2500;      // Posicao central esperada da linha (6 sensores => 0 a 5000)
 
 // Fator de PERDA de velocidade do motor do mesmo lado da linha (ajuste livre):
 //  - proximo de 0.0  -> quase nao curva
-//  - ate 1.0         -> motor interno desacelera de forma gradual ate 0 no erro maximo
-float perdaMotorFronteiroCurva = 1.0;
+//  - ate 2.0         -> motor interno desacelera de forma gradual ate 0 no erro maximo
+float perdaMotorFronteiroCurva = 2.0;
 
 // Fator de GANHO de velocidade do motor oposto a linha (ajuste livre: 0-1):
-float ganhoMotorOpostoCurva = 1.0;
+float ganhoMotorOpostoCurva = 1;
 
 void setup()
 {
@@ -142,7 +142,7 @@ void controlarCurva(int error) {
 //                               (pega o menor valor)
   int velocidadeA = VELOCIDADE + min(correcaoPerda, 0) + max(correcaoGanho, 0);
 //                               (pega o maior valor)
-  int velocidadeB = VELOCIDADE - max(correcaoPerda, 0) + min(correcaoGanho, 0);
+  int velocidadeB = VELOCIDADE - max(correcaoPerda, 0) - min(correcaoGanho, 0);
 
 // Envia as velocidades calculadas para os motores.
   setMotorA(velocidadeA);
@@ -158,7 +158,7 @@ void setMotorA(int velocidadeA) {
 
   // Limita a velocidade entre -255 e 255.
   // O sinal indica a direção e o número indica a velocidade.
-  velocidadeA = constrain(velocidadeA, -150, 150);
+  velocidadeA = constrain(velocidadeA, -255, 255);
 
   // Define a direção do Motor A.
   if (velocidadeA >= 0) {
@@ -189,7 +189,7 @@ void setMotorA(int velocidadeA) {
 void setMotorB(int velocidadeB) {
 
   // Limita a velocidade entre -255 e 255.
-  velocidadeB = constrain(velocidadeB, -150, 150);
+  velocidadeB = constrain(velocidadeB, -255, 255);
 
   // Define a direção do Motor B (ESQUERDO)
   if (velocidadeB >= 0) {
