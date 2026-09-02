@@ -97,6 +97,9 @@ void loop()
   Serial.print(F(" | Erro: "));
   Serial.println(error);
 
+  if(sensoresExtremos < 0)
+	  sensoresExtremos *= -1
+  
   if (sensoresCentro < 50 && sensoresExtremos < 600) {
     // Nenhum sensor esta enxergando a linha com intensidade (possivel falha de
     // leitura, cruzamento ou lacuna na linha): mantem o robo em frente.
