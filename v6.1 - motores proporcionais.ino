@@ -34,7 +34,7 @@ void setup()
 {
   Serial.begin(9600);
 
-  qtra.setTypeRC();
+  qtra.setTypeAnalog();
   qtra.setSensorPins((const uint8_t[]){A0, A1, A2, A3, A4, A5}, NUM_SENSORS);
   qtra.setSamplesPerSensor(NUM_SAMPLES_PER_SENSOR);
   qtra.setEmitterPin(EMITTER_PIN);
@@ -90,16 +90,14 @@ void loop()
        sensorValues[3] +
        sensorValues[4]) / 4;
 
-  int sensoresExtremos =
-      (sensorValues[0] +
-       sensorValues[5]) / 2;
+  int sensoresExtremos = -sensorValues[0] + sensorValues[5];
 
   Serial.print(F(" Posicao: "));
   Serial.print(position);
   Serial.print(F(" | Erro: "));
   Serial.println(error);
 
-  if (sensoresCentro < 50 && sensoresExtremos < 500) {
+  if (sensoresCentro < 50 && sensoresExtremos < 600) {
     // Nenhum sensor esta enxergando a linha com intensidade (possivel falha de
     // leitura, cruzamento ou lacuna na linha): mantem o robo em frente.
     moverFrente();
