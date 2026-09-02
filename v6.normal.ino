@@ -105,7 +105,7 @@ void loop()
   int intervalo = 300;
   int error = position - centro;
   int sensoresCentro = (sensorValues[1]+sensorValues[2]+sensorValues[3]+sensorValues[4])/4;
-  int sensoresExtremos = (sensorValues[0]+sensorValues[5])/2;
+  int sensoresExtremos = -sensorValues[0]+sensorValues[5];
 
   if(error <= -300)
   PWMERRO = map(error, -2500, -300, 65, 125);
@@ -122,7 +122,11 @@ void loop()
 //   Bloco simples de IFs para testar a leitura da posição.
 //   Ele vai para a esquerda ou para direita com no mínimo um desvio de valor 500.
 //   Mantém-se em linha reta se estiver no intervalo central (2000-3000).
-  if(sensoresCentro < 50 && sensoresExtremos < 500)
+
+ if(sensoresExtremos < 0)
+	sensoresExtremos *= -1
+
+  if(sensoresCentro < 50 && sensoresExtremos < 600) // testar valores
     moverFrente();
   else {
     if (position < centro-intervalo) {
