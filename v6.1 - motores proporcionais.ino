@@ -121,6 +121,7 @@ void controlarCurva(int error) {
   //caso contrário, devolve o próprio valor sem alteração.
 
   erroNormalizado = constrain(erroNormalizado, -1.0, 1.0);
+  // OBS: -1 indica que A LINHA está para a esquerda (não o cremoso). Analogamente, 1 indica a linha para a direita. 
 
  // Calcula a correção da curva com base no erro.
  // Quanto maior o erro, maior será a correção.
@@ -140,10 +141,13 @@ void controlarCurva(int error) {
 // Assim, a diferença entre os motores faz o robô virar.
 // se a correção for positiva diminui a velocidade do motor B(ESQUERDO)
 // se for negativa diminui a velocidade do Motor A(DIREITO)
-//                               (pega o menor valor)
-  int velocidadeA = VELOCIDADE + min(correcaoPerda, 0) + max(correcaoGanho, 0);
-//                               (pega o maior valor)
-  int velocidadeB = VELOCIDADE - max(correcaoPerda, 0) - min(correcaoGanho, 0);
+
+  // int velocidadeA = VELOCIDADE + min(correcaoPerda, 0) + max(correcaoGanho, 0);
+  // int velocidadeB = VELOCIDADE - max(correcaoPerda, 0) - min(correcaoGanho, 0);
+
+  // Correção do chat
+  int velocidadeA = VELOCIDADE - max(correcaoPerda, 0) - min(correcaoGanho, 0);
+  int velocidadeB = VELOCIDADE + min(correcaoPerda, 0) + max(correcaoGanho, 0);
 
 // Envia as velocidades calculadas para os motores.
   setMotorA(velocidadeA);
