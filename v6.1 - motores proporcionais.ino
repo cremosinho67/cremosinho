@@ -142,12 +142,8 @@ void controlarCurva(int error) {
 // se a correção for positiva diminui a velocidade do motor B(ESQUERDO)
 // se for negativa diminui a velocidade do Motor A(DIREITO)
 
-  // int velocidadeA = VELOCIDADE + min(correcaoPerda, 0) + max(correcaoGanho, 0);
-  // int velocidadeB = VELOCIDADE - max(correcaoPerda, 0) - min(correcaoGanho, 0);
-
-  // Correção do chat
-  int velocidadeA = VELOCIDADE - max(correcaoPerda, 0) - min(correcaoGanho, 0);
-  int velocidadeB = VELOCIDADE + min(correcaoPerda, 0) + max(correcaoGanho, 0);
+  int velocidadeA = VELOCIDADE + min(correcaoPerda, 0) + max(correcaoGanho, 0);
+  int velocidadeB = VELOCIDADE - max(correcaoPerda, 0) - min(correcaoGanho, 0);
 
 // Envia as velocidades calculadas para os motores.
   setMotorA(velocidadeA);
