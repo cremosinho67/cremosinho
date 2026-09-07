@@ -98,7 +98,7 @@ void loop()
   Serial.println(error);
 
   if(sensoresExtremos < 0)
-	  sensoresExtremos *= -1
+	  sensoresExtremos *= -1;
   
   if (sensoresCentro < 50 && sensoresExtremos < 600) {
     // Nenhum sensor esta enxergando a linha com intensidade (possivel falha de
