@@ -36,11 +36,11 @@ const int PWMB = 5;   // Motor B - Esquerdo
 const int BIN1 = 8;
 const int BIN2 = 7;
 
-const int VELOCIDADE = 200;
+const int VELOCIDADE = 150;
 const int CENTRO = 2500;
 
 float perdaMotorFronteiroCurva = 2.0;
-float ganhoMotorOpostoCurva = 1;
+float ganhoMotorOpostoCurva = 1; // ORIGINAL: 1
 
 // ============================================================
 //  HISTORICO (leve: so os valores AGRUPADOS, nao os 6 sensores crus)
@@ -121,13 +121,13 @@ const LeituraAgrupada& historicoAnterior(uint8_t n) {
 // ============================================================
 //  LIMIARES (pontos de partida - ajuste na pista real)
 // ============================================================
-const int16_t LIMIAR_CENTRO_FRACO = 50;   // abaixo disso, o centro nao ve linha (mesmo valor do v6.1)
+const int16_t LIMIAR_CENTRO_FRACO = 100;   // abaixo disso, o centro nao ve linha (mesmo valor do v6.1)
 const int16_t LIMIAR_DIFF_FRACO   = 600;  // abaixo disso, extremos nao indicam curva (mesmo valor do v6.1)
 const int16_t LIMIAR_DIFF_CURVA   = 700;  // acima disso, um extremo esta bem mais escuro que o outro
 
 const unsigned long TIMEOUT_GAP_MS   = 500; // seguranca: nao ficar "as cegas" indefinidamente
 const unsigned long TIMEOUT_CURVA_MS = 900; // seguranca: nao girar pra sempre se a linha sumir de vez
-const int VELOCIDADE_GIRO = 150;
+const int VELOCIDADE_GIRO = 100; // ORIGINAL: 150
 
 
 void setup() {
@@ -272,9 +272,11 @@ void tratarCurvaAcentuada(int direcao) {
 
     // Sai quando os extremos "limpam" (deixam de ver preto) e o centro
     // volta a enxergar a linha.
-    bool extremosLimpos = (abs(l.diffExtremos) < LIMIAR_DIFF_CURVA) &&
-                          (l.centroMedia >= LIMIAR_CENTRO_FRACO);
-    if (extremosLimpos) break;
+    bool extremosMediosLimpos = (abs(l.diffExtremos) < LIMIAR_DIFF_CURVA) &&
+                          (l.centroMedia >= LIMIAR_CENTRO_FRACO) &&
+                          (abs(l.diffMedios) < LIMIAR_DIFF_CURVA);
+    
+    if (extremosMediosLimpos) break;
     if (millis() - inicio > TIMEOUT_CURVA_MS) break; // rede de seguranca
 
     girarNoEixo(direcao, VELOCIDADE_GIRO);
