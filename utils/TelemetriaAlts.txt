@@ -1,0 +1,43 @@
+// ============================================================
+//  TELEMETRIA (Serial)
+// ============================================================
+
+-----------------------------------------------
+
+// Valor a partir do qual o sensor e considerado "vendo preto" (0 a 1000 apos calibracao).
+// Ajuste na pista real.
+const uint16_t LIMIAR_SENSOR_PRETO = 500;
+
+void imprimirTelemetria(const LeituraAgrupada &l) {
+  // Linha 1: sensores individuais (■ = preto, □ = claro)
+  for (uint8_t i = 0; i < NUM_SENSORS; i++) {
+    Serial.print(F("S"));
+    Serial.print(i);
+    Serial.print(F(": "));
+    Serial.print(sensorValues[i] > LIMIAR_SENSOR_PRETO ? F("■") : F("□"));
+    Serial.print(F("   "));
+  }
+  Serial.println();
+
+  // Linha 2: leituras tratadas
+  Serial.print(F("Erro: "));
+  Serial.print(l.erro);
+  Serial.print(F(", Centro: "));
+  Serial.print(l.centroMedia);
+  Serial.print(F(", DiffMedios: "));
+  Serial.print(l.diffMedios);
+  Serial.print(F(", DiffExtremos: "));
+  Serial.println(l.diffExtremos);
+}
+
+-----------------------------------------------
+
+void imprimirTelemetria(const LeituraAgrupada &l) {
+  Serial.print(F("Erro:"));
+  Serial.print(l.erro);
+  Serial.print(F(" Centro:"));
+  Serial.print(l.centroMedia);
+  Serial.print(F(" DiffMedios:"));
+  Serial.print(l.diffMedios);
+  Serial.print(F(" DiffExtremos:"));
+  Se
