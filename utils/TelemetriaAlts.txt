@@ -5,10 +5,17 @@
 -----------------------------------------------
 
 // Valor a partir do qual o sensor e considerado "vendo preto" (0 a 1000 apos calibracao).
-// Ajuste na pista real.
 const uint16_t LIMIAR_SENSOR_PRETO = 500;
 
+// A telemetria so e impressa a cada N chamadas (1 = toda vez).
+const uint8_t TELEMETRIA_A_CADA = 1; // testar
+
 void imprimirTelemetria(const LeituraAgrupada &l) {
+  // Contador interno: persiste entre chamadas, sem variavel global.
+  static uint8_t contador = 0;
+  if (++contador < TELEMETRIA_A_CADA) return;
+  contador = 0;
+
   // Linha 1: sensores individuais (■ = preto, □ = claro)
   for (uint8_t i = 0; i < NUM_SENSORS; i++) {
     Serial.print(F("S"));
