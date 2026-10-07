@@ -40,4 +40,5 @@ void imprimirTelemetria(const LeituraAgrupada &l) {
   Serial.print(F(" DiffMedios:"));
   Serial.print(l.diffMedios);
   Serial.print(F(" DiffExtremos:"));
-  Se
+  Serial.println(l.diffExtremos);
+}
